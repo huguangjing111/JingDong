@@ -14,7 +14,7 @@ BOT_NAME = 'JingDong'
 SPIDER_MODULES = ['JingDong.spiders']
 NEWSPIDER_MODULE = 'JingDong.spiders'
 
-IMAGES_STORE = '/home/python/jingdong_images/'
+IMAGES_STORE = '/home/python/Desktop/jingdong_info/'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -29,7 +29,7 @@ CONCURRENT_REQUESTS = 32
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1.5
+# DOWNLOAD_DELAY = 1.5
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -73,14 +73,14 @@ ITEM_PIPELINES = {
    'JingDong.pipelines.JingDongImagePipline': 150,
    'JingDong.pipelines.JingdongMongoDBPipline': 200,
 
-   'scrapy_redis.pipelines.RedisPipeline': 900
+   # 'scrapy_redis.pipelines.RedisPipeline': 900
 }
 
 # 1(必须). 使用了scrapy_redis的去重组件，在redis数据库里做去重
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
 # 2(必须). 使用了scrapy_redis的调度器，在redis里分配请求
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 # 3(必须). 在redis中保持scrapy-redis用到的各个队列，从而允许暂停和暂停后恢复，也就是不清理redis queues
 SCHEDULER_PERSIST = True
@@ -90,8 +90,8 @@ SCHEDULER_PERSIST = True
 
 
 # 5(必须). 指定redis数据库的连接参数
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = 6379
+# REDIS_HOST = '127.0.0.1'
+# REDIS_PORT = 6379
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

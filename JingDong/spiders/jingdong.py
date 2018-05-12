@@ -13,12 +13,13 @@ sys.setdefaultencoding('utf-8')
 import scrapy
 
 
+class JingdongSpider(scrapy.Spider):
+# 分布式爬取
 # class JingdongSpider(RedisSpider):
-class JingdongSpider(RedisSpider):
     name = 'jingdong'
     allowed_domains = []
-    # start_urls = ['https://www.jd.com/allSort.aspx']
-    redis_key = "jingdong:start_urls"
+    start_urls = ['https://www.jd.com/allSort.aspx']
+    # redis_key = "jingdong:start_urls"
 
     headers = {
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
