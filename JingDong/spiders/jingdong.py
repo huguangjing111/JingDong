@@ -13,9 +13,10 @@ sys.setdefaultencoding('utf-8')
 import scrapy
 
 
+# class JingdongSpider(RedisSpider):
 class JingdongSpider(RedisSpider):
     name = 'jingdong'
-    allowed_domains = ['p.3.cn', 'jd.com']
+    allowed_domains = []
     # start_urls = ['https://www.jd.com/allSort.aspx']
     redis_key = "jingdong:start_urls"
 
