@@ -21,6 +21,12 @@ class JingdongPipeline(object):
         self.p = open("/home/python/Desktop/jingdong_info/jingdong_phone.csv", "w")
         self.c = open("/home/python/Desktop/jingdong_info/jingdong_computer.csv", "a")
         self.c_c = open("/home/python/Desktop/jingdong_info/jingdong_comment.csv", "w")
+        # 手机数据去重
+        self.phone = set()
+        # 电脑办公数据去重
+        self.computer = set()
+        # 评论数据去重
+        self.comment = set()
 
         # 创建csv文件读写对象
         self.csv_exporter_p = CsvItemExporter(self.p)
@@ -35,14 +41,26 @@ class JingdongPipeline(object):
         # 每次写入一个item数据
         if isinstance(item, JingdongItem):
             if item['big_type'] == u'手机':
-                print u'[INFO]  正在写入手机商品csv文件'
-                self.csv_exporter_p.export_item(item)
+                if item['good_name'] in self.phone:
+                    raise Exception(u'该数据已经保存在文件中')
+                else:
+                    self.phone.add(item['good_name'])
+                    print u'[INFO]  正在写入手机商品csv文件'
+                    self.csv_exporter_p.export_item(item)
             elif item['big_type'] == u'电脑、办公':
-                print u'[INFO]  正在写入电脑商品csv文件'
-                self.csv_exporter_c.export_item(item)
+                if item['good_name'] in self.computer:
+                    raise Exception(u'该数据已经保存在文件中')
+                else:
+                    self.computer.add(item['good_name'])
+                    print u'[INFO]  正在写入电脑商品csv文件'
+                    self.csv_exporter_c.export_item(item)
         elif isinstance(item, CommentItem):
-            print u'[INFO]  正在写入评论信息csv文件'
-            self.csv_exporter_c_c.export_item(item)
+            if item['productId'] in self.comment:
+                raise Exception(u'该产品的评论信息已保存')
+            else:
+                self.comment.add(item['productId'])
+                print u'[INFO]  正在写入评论信息csv文件'
+                self.csv_exporter_c_c.export_item(item)
         return item
 
     def close_spider(self, spider):
@@ -60,16 +78,28 @@ class JingdongMongoDBPipline(object):
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(host='127.0.0.1', port=27017)
         self.db = self.client['JINGDONG']
+        # 根据productId对评论信息进行去重
+        self.add_productId = set()
         self.collection_comment = self.db['jingdong_comment']
+        # 商品数据去重处理
+        self.add_name = set()
         self.collection_goods = self.db['jingdong_goods']
 
     def process_item(self, item, spider):
         if isinstance(item, CommentItem):
-            print u'[INFO]  正在保存%s评论信息到mongoDB' % item['title']
-            self.collection_comment.insert(dict(item))
+            if item['productId'] in self.add_productId:
+                raise Exception(u'该产品的评论信息已保存')
+            else:
+                self.add_productId.add(item['productId'])
+                print u'[INFO]  正在保存%s评论信息到mongoDB' % item['title']
+                self.collection_comment.insert(dict(item))
         elif isinstance(item, JingdongItem):
-            print u'[INFO]  正在保存商品信息%s到mongoDB' % item['good_name']
-            self.collection_goods.insert(dict(item))
+            if item['good_name'] in self.add_name:
+                raise Exception(u'该数据已经保存在数据库中')
+            else:
+                self.add_name.add(item['good_name'])
+                print u'[INFO]  正在保存商品信息%s到mongoDB' % item['good_name']
+                self.collection_goods.insert(dict(item))
         return item
 
     def close_spider(self, spider):
@@ -104,6 +134,5 @@ class JingDongImagePipline(ImagesPipeline):
                 print u'[INFO]  修改图片路径成功%s' % item['img_src']
             except Exception as e:
                 print e
-                print img_path
-                print u'[ERROR] 修改图片路径失败%s' % item['img_src']
+                print u'[ERROR] 修改图片路径失败或者已保存%s' % item['img_src']
             return item
