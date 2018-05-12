@@ -72,28 +72,28 @@ ITEM_PIPELINES = {
    'JingDong.pipelines.JingdongPipeline': 100,
    'JingDong.pipelines.JingDongImagePipline': 100,
    'JingDong.pipelines.JingdongMongoDBPipline': 200,
-   # 'scrapy_redis.pipelines.RedisPipeline': 90
+   'scrapy_redis.pipelines.RedisPipeline': 90
 }
 
 
 
 
 # 1(必须). 使用了scrapy_redis的去重组件，在redis数据库里做去重
-# DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
 # 2(必须). 使用了scrapy_redis的调度器，在redis里分配请求
-# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 # 3(必须). 在redis中保持scrapy-redis用到的各个队列，从而允许暂停和暂停后恢复，也就是不清理redis queues
-# SCHEDULER_PERSIST = True
+SCHEDULER_PERSIST = True
 
 # 4(必须). 通过配置RedisPipeline将item写入key为 spider.name : items 的redis的list中，供后面的分布式处理item
 # 这个已经由 scrapy-redis 实现，不需要我们写代码，直接使用即可
 
 
 # 5(必须). 指定redis数据库的连接参数
-# REDIS_HOST = '127.0.0.1'
-# REDIS_PORT = 6379
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

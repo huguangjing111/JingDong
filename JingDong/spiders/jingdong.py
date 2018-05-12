@@ -3,6 +3,8 @@ import json
 import re
 import sys
 
+from scrapy_redis.spiders import RedisSpider
+
 from JingDong.items import JingdongItem, CommentItem
 
 reload(sys)
@@ -11,11 +13,11 @@ sys.setdefaultencoding('utf-8')
 import scrapy
 
 
-class JingdongSpider(scrapy.Spider):
+class JingdongSpider(RedisSpider):
     name = 'jingdong'
     allowed_domains = ['p.3.cn', 'jd.com']
-    start_urls = ['https://www.jd.com/allSort.aspx']
-    # redis_key = "jingdong:start_urls"
+    # start_urls = ['https://www.jd.com/allSort.aspx']
+    redis_key = "jingdong:start_urls"
 
     headers = {
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
@@ -116,8 +118,16 @@ class JingdongSpider(scrapy.Spider):
 
             # 商品名称 已解决
             # 由于标题钱存在空格，所以标题格式[    ,真实标题]
-            good_name = node.xpath('div//div[@class="p-name"]//em/text()').extract()[-1].strip()
-            item['good_name'] = good_name
+            title = node.xpath('div//div[@class="p-name"]//em/text()').extract()[-1].strip()
+            if '/' in title:
+                title = title.replace('/', '')
+            # 去掉标题中的-
+            if '-' in title:
+                title = title.replace('-', '')
+            # 将空格去掉
+            title = title.replace(' ','')
+            item['good_name'] = title
+            item['good_name'] = title
 
             # 提取商品的id
             good_id = re.search(r'/(\d+)\.', good_url).group(1)
@@ -132,7 +142,7 @@ class JingdongSpider(scrapy.Spider):
             yield scrapy.Request(
                 url=comment_info_url,
                 callback=self.parse_comment_info,
-                meta={'good_name': good_name}
+                meta={'good_name': title}
             )
 
             # 提取价格信息url
