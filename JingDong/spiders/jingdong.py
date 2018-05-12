@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import logging
 import re
 import sys
 
@@ -27,8 +26,24 @@ class JingdongSpider(scrapy.Spider):
 
     def parse(self, response):
         print u'[INFO]  正在初始化请求%s' % response.url
-        # 手机通讯子列链接
+        # 手机通讯子列链接(也可更换下面的分类进行爬取)
         node_phone_list = response.xpath('//div/div[1]/div[@class="category-item m"][2]/div[last()]//dl')
+        # 家用电器
+        # node_appliances_list = response.xpath('//div/div[1]/div[@class="category-item m"][3]/div[last()]//dl')
+        # 数码
+        # node_cameras_list = response.xpath('//div/div[1]/div[@class="category-item m"][4]/div[last()]//dl')
+        # 家居家装
+        # node_family_list = response.xpath('//div/div[1]/div[@class="category-item m"][5]/div[last()]//dl')
+        # 厨具
+        # node_cook_list = response.xpath('//div/div[1]/div[@class="category-item m"][7]/div[last()]//dl')
+        # 个护化妆
+        # node_beauty_list = response.xpath('//div/div[1]/div[@class="category-item m"][8]/div[last()]//dl')
+        # 服饰内衣
+        # node_clothes_list = response.xpath('//div/div[1]/div[@class="category-item m"][9]/div[last()]//dl')
+        # 钟表
+        # node_watch_list = response.xpath('//div/div[1]/div[@class="category-item m"][10]/div[last()]//dl')
+        # 鞋靴
+        # node_shoes_list = response.xpath('//div/div[1]/div[@class="category-item m"][11]/div[last()]//dl')
         for node in node_phone_list:
             # 商品页链接列表
             href_list = node.xpath('dd/a/@href').extract()
@@ -66,7 +81,6 @@ class JingdongSpider(scrapy.Spider):
         lit_type = response.xpath('//div[@class="crumbs-nav"]/div/div[3]//span/text()').extract_first()
 
         node_list = response.xpath('//li[@class="gl-item"]')
-        logging.warning(len(node_list))
         # 下一页链接
         next_link = response.xpath('//span[@class="p-num"]/a[@class="pn-next"]')
 

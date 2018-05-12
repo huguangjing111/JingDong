@@ -24,7 +24,7 @@ IMAGES_STORE = '/home/python/jingdong_images/'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 64
+CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -54,10 +54,10 @@ CONCURRENT_REQUESTS = 64
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
+# DOWNLOADER_MIDDLEWARES = {
    # 'JingDong.middlewares.JingdongDownloaderMiddleware': 543,
    # 'JingDong.middlewares.JingDongProxyMiddleWares': 543,
-}
+# }
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -70,9 +70,9 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
    # 'JingDong.pipelines.JingdongPipeline': 300,
    'JingDong.pipelines.JingdongPipeline': 100,
-   # 'JingDong.pipelines.JingDongImagePipline': 100,
+   'JingDong.pipelines.JingDongImagePipline': 100,
    'JingDong.pipelines.JingdongMongoDBPipline': 200,
-   # 'scrapy_redis.pipelines.RedisPipeline': 900
+   # 'scrapy_redis.pipelines.RedisPipeline': 90
 }
 
 
@@ -117,9 +117,9 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-LOG_ENABLED = True  # 启用logging
-LOG_ENCODING = 'utf-8'  # logging使用的编码
-LOG_FILE = 'jingdong.log'  # 在当前目录里创建logging输出文件的文件名
-LOG_LEVEL = 'DEBUG'  # log的最低级别
-LOG_STDOUT = False  # 如果为 True，进程所有的标准输出(及错误)将会被重定向到log中。例如，执行 print "hello" ，其将会在Scrapy log中显示。
+# LOG_ENABLED = False  # 启用logging
+# LOG_ENCODING = 'utf-8'  # logging使用的编码
+# LOG_FILE = '/home/python/Desktop/jingdong_info/jingdong.log'  # 在当前目录里创建logging输出文件的文件名
+# LOG_LEVEL = 'DEBUG'  # log的最低级别
+# LOG_STDOUT = False  # 如果为 True，进程所有的标准输出(及错误)将会被重定向到log中。例如，执行 print "hello" ，其将会在Scrapy log中显示。
 

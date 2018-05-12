@@ -19,9 +19,9 @@ from JingDong.settings import IMAGES_STORE
 class JingdongPipeline(object):
     def open_spider(self, spider):
         # 保存csv数据的文件对象
-        self.p = open("jingdong_phone.csv", "w")
-        self.c = open("jingdong_computer.csv", "a")
-        self.c_c = open("jingdong_comment.csv", "w")
+        self.p = open("/home/python/Desktop/jingdong_info/jingdong_phone.csv", "w")
+        self.c = open("/home/python/Desktop/jingdong_info/jingdong_computer.csv", "a")
+        self.c_c = open("/home/python/Desktop/jingdong_info/jingdong_comment.csv", "w")
 
         # 创建csv文件读写对象
         self.csv_exporter_p = CsvItemExporter(self.p)
@@ -78,28 +78,31 @@ class JingdongMongoDBPipline(object):
 class JingDongImagePipline(ImagesPipeline):
     # 保存图片到默认位置
     def get_media_requests(self, item, info):
-        print u'[INFO]  正在保存图片%s'% item['img_src']
-        yield scrapy.Request(item['img_src'])
+        if isinstance(item,JingdongItem):
+            print u'[INFO]  正在保存图片%s' % item['img_src']
+            yield scrapy.Request(item['img_src'])
 
     def item_completed(self, results, item, info):
-        print u'[INFO]  正在修改图片路径%s' % item['img_src']
-        # 原来图片存储路径
-        img_path = [x['path'] for ok,x in results if ok][0]
-        # 现在图片路径
-        item['img_src'] = IMAGES_STORE + item['good_name'] + item['img_src'][-4:]
-        if '/' in item['good_name']:
-            # print '1111111111111'
-            item['img_src'] = item['img_src'].replace('/','')
-            # print item['img_src']
-        # 修改名字
-        try:
-            os.rename(
-                IMAGES_STORE + img_path,
-                item['img_src']
-            )
-            print u'[INFO]  修改图片路径成功%s' % item['img_src']
-        except Exception as e:
-            print e
-            print img_path
-            print u'[ERROR] 修改图片路径失败%s' % item['img_src']
-        return item
+        if isinstance(item, JingdongItem):
+            print u'[INFO]  正在修改图片路径%s' % item['img_src']
+            # 原来图片存储路径
+            img_path = [x['path'] for ok,x in results if ok][0]
+            if '/' in item['good_name']:
+                item['good_name'] = item['good_name'].replace('/','')
+            if '-' in item['good_name']:
+                item['good_name'] = item['good_name'].replace('-', '')
+            item['good_name'] = item['good_name'].strip().replace(' ','')
+            # 现在图片路径
+            item['img_src'] = IMAGES_STORE + item['good_name'] + item['img_src'][-4:]
+            # 修改名字
+            try:
+                os.rename(
+                    IMAGES_STORE + img_path,
+                    item['img_src']
+                )
+                print u'[INFO]  修改图片路径成功%s' % item['img_src']
+            except Exception as e:
+                print e
+                print img_path
+                print u'[ERROR] 修改图片路径失败%s' % item['img_src']
+            return item
