@@ -33,24 +33,18 @@ class JingdongItem(scrapy.Item):
 
 
 class CommentItem(scrapy.Item):
-    #商品id
-    productId = scrapy.Field()
     # 商品名称
-    title = scrapy.Field()
-    # 好评度
-    goodRateShow= scrapy.Field()
-    # 评论数量
-    commentCount = scrapy.Field()
-    # 好评数量
-    goodCount = scrapy.Field()
-    # 中评数量
-    generalCount = scrapy.Field()
-    # 差评数量
-    poorCount = scrapy.Field()
-    # 晒图数量
-    imageListCount = scrapy.Field()
-    # 热评名称和数量
-    hotCommentTag = scrapy.Field()
+    good_title = scrapy.Field()
+    # 用户id
+    user_id = scrapy.Field()
+    # 评论信息
+    content = scrapy.Field()
+    # 创建时间
+    create_time = scrapy.Field()
+    # 产品评分星级
+    score = scrapy.Field()
+    # 产品颜色
+    color = scrapy.Field()
 
 
 

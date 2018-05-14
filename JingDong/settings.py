@@ -69,8 +69,8 @@ CONCURRENT_REQUESTS = 32
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    # 'JingDong.plines.JingdongPipeline': 300,
-   'JingDong.pipelines.JingdongPipeline': 100,
-   'JingDong.pipelines.JingDongImagePipline': 150,
+   # 'JingDong.pipelines.JingdongPipeline': 100,
+   # 'JingDong.pipelines.JingDongImagePipline': 150,
    'JingDong.pipelines.JingdongMongoDBPipline': 200,
 
    # 'scrapy_redis.pipelines.RedisPipeline': 900
@@ -118,6 +118,7 @@ SCHEDULER_PERSIST = True
 LOG_ENABLED = True  # 启用logging
 LOG_ENCODING = 'utf-8'  # logging使用的编码
 LOG_FILE = '/home/python/Desktop/jingdong_info/jingdong.log'  # 在当前目录里创建logging输出文件的文件名
+# LOG_FILE = 'jingdong.log'  # 在当前目录里创建logging输出文件的文件名
 LOG_LEVEL = 'DEBUG'  # log的最低级别
 LOG_STDOUT = False  # 如果为 True，进程所有的标准输出(及错误)将会被重定向到log中。例如，执行 print "hello" ，其将会在Scrapy log中显示。
 

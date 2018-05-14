@@ -19,7 +19,7 @@ class JingdongPipeline(object):
     def open_spider(self, spider):
         # 保存csv数据的文件对象
         self.p = open("/home/python/Desktop/jingdong_info/jingdong_phone.csv", "w")
-        self.c = open("/home/python/Desktop/jingdong_info/jingdong_computer.csv", "a")
+        self.c = open("/home/python/Desktop/jingdong_info/jingdong_computer.csv", "w")
         self.c_c = open("/home/python/Desktop/jingdong_info/jingdong_comment.csv", "w")
         # 手机数据去重
         self.phone = set()
@@ -55,10 +55,10 @@ class JingdongPipeline(object):
                     print u'[INFO]  正在写入电脑商品csv文件'
                     self.csv_exporter_c.export_item(item)
         elif isinstance(item, CommentItem):
-            if item['productId'] in self.comment:
+            if item['user_id'] in self.comment:
                 raise Exception(u'该产品的评论信息已保存')
             else:
-                self.comment.add(item['productId'])
+                self.comment.add(item['user_id'])
                 print u'[INFO]  正在写入评论信息csv文件'
                 self.csv_exporter_c_c.export_item(item)
         return item
@@ -78,8 +78,8 @@ class JingdongMongoDBPipline(object):
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(host='127.0.0.1', port=27017)
         self.db = self.client['JINGDONG']
-        # 根据productId对评论信息进行去重
-        self.add_productId = set()
+        # 根据user_id对评论信息进行去重
+        self.add_user_id = set()
         self.collection_comment = self.db['jingdong_comment']
         # 商品数据去重处理
         self.add_name = set()
@@ -87,11 +87,11 @@ class JingdongMongoDBPipline(object):
 
     def process_item(self, item, spider):
         if isinstance(item, CommentItem):
-            if item['productId'] in self.add_productId:
+            if item['user_id'] in self.add_user_id:
                 raise Exception(u'该产品的评论信息已保存')
             else:
-                self.add_productId.add(item['productId'])
-                print u'[INFO]  正在保存%s评论信息到mongoDB' % item['title']
+                self.add_user_id.add(item['user_id'])
+                print u'[INFO]  正在保存%s评论信息到mongoDB' % item['good_title']
                 self.collection_comment.insert(dict(item))
         elif isinstance(item, JingdongItem):
             if item['good_name'] in self.add_name:
@@ -124,7 +124,7 @@ class JingDongImagePipline(ImagesPipeline):
                 item['good_name'] = item['good_name'].replace('-', '')
             item['good_name'] = item['good_name'].strip().replace(' ', '')
             # 现在图片路径
-            item['img_src'] = IMAGES_STORE + item['good_name'] + item['img_src'][-4:]
+            item['img_src'] = IMAGES_STORE + 'images/'+item['good_name'] + item['img_src'][-4:]
             # 修改名字
             try:
                 os.rename(
